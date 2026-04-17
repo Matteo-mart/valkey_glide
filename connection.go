@@ -15,7 +15,7 @@ import (
 /*
 Initialisation, connection avec valkey et création d'un client
 */
-func connection() (glide.Client, error) {
+func connection() (*glide.Client, error) {
 	//recup la config via la variable d'environnement
 	host := os.Getenv("VALKEY_HOST")
 	if host == "" {
@@ -38,18 +38,19 @@ func connection() (glide.Client, error) {
 
 	client, err := glide.NewClient(cfg)
 	if err != nil {
-		fmt.Errorf("erreur création Valkey Client: %w", err)
+		return nil, fmt.Errorf("erreur création Valkey Client: %w", err)
 	}
 
 	ctx := context.Background()
-	_, err = client.Set(ctx, "connection_test", "ok") //
+	// Test connexion
+	_, err = client.Set(ctx, "connection_test", "ok")
 	if err != nil {
 		// Nettoyage avant de quitter
 		client.Close()
-		fmt.Errorf("client créé mais Host inaccessible: %w", err)
+		return nil, fmt.Errorf("client créé mais Host inaccessible: %w", err)
 	}
 
 	log.Printf("\nConnexion réussie sur %s:%d", host, port)
-	return *client, nil
+	return client, nil
 
 }
