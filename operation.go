@@ -10,7 +10,7 @@ import (
 func setKey(ctx context.Context, client glide.Client, key, value string) error {
 	_, err := client.Set(ctx, key, value)
 	if err != nil {
-		return fmt.Errorf("erreur Set [%s]: %w", key, err)
+		return fmt.Errorf("Erreur Set [%s]: %w", key, err)
 	}
 	fmt.Printf("Set réussi -> %s = %s\n", key, value)
 	return nil
@@ -19,7 +19,7 @@ func setKey(ctx context.Context, client glide.Client, key, value string) error {
 func getKey(ctx context.Context, client glide.Client, key string) (string, error) {
 	value, err := client.Get(ctx, key)
 	if err != nil {
-		return "", fmt.Errorf("erreur Get [%s]: %w", key, err)
+		return "", fmt.Errorf("Erreur Get [%s]: %w", key, err)
 	}
 	if value.IsNil() {
 		fmt.Printf("Clé introuvable: %s\n", key)
@@ -32,7 +32,7 @@ func getKey(ctx context.Context, client glide.Client, key string) (string, error
 func setMultipleKeys(ctx context.Context, client glide.Client, keyValues map[string]string) error {
 	_, err := client.MSet(ctx, keyValues)
 	if err != nil {
-		return fmt.Errorf("erreur MSet: %w", err)
+		return fmt.Errorf("Erreur MSet: %w", err)
 	}
 	fmt.Printf("MSet réussi -> %d clés insérées\n", len(keyValues))
 	return nil
@@ -41,7 +41,7 @@ func setMultipleKeys(ctx context.Context, client glide.Client, keyValues map[str
 func getMultipleKeys(ctx context.Context, client glide.Client, keys []string) error {
 	values, err := client.MGet(ctx, keys)
 	if err != nil {
-		return fmt.Errorf("erreur MGet: %w", err)
+		return fmt.Errorf("Erreur MGet: %w", err)
 	}
 	fmt.Println("MGet réussi:")
 	for i, val := range values {
@@ -57,7 +57,7 @@ func getMultipleKeys(ctx context.Context, client glide.Client, keys []string) er
 func deleteKeys(ctx context.Context, client glide.Client, keys []string) error {
 	count, err := client.Del(ctx, keys)
 	if err != nil {
-		return fmt.Errorf("erreur Del: %w", err)
+		return fmt.Errorf("Erreur Del: %w", err)
 	}
 	fmt.Printf("%d clé(s) supprimée(s)\n", count)
 	return nil
