@@ -52,7 +52,7 @@ func main() {
 		return
 	}
 
-	// Del
+	// Delete
 	if err := deleteKeys(ctx, client, keys); err != nil {
 		fmt.Printf("%v\n", err)
 		return

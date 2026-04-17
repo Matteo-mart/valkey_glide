@@ -12,6 +12,9 @@ import (
 	"github.com/valkey-io/valkey-glide/go/v2/config"
 )
 
+/*
+Initialisation, connection avec valkey et création d'un client
+*/
 func connection() (glide.Client, error) {
 	//recup la config via la variable d'environnement
 	host := os.Getenv("VALKEY_HOST")
@@ -46,7 +49,7 @@ func connection() (glide.Client, error) {
 		fmt.Errorf("client créé mais Host inaccessible: %w", err)
 	}
 
-	log.Printf("Connexion réussie sur %s:%d", host, port)
+	log.Printf("\nConnexion réussie sur %s:%d", host, port)
 	return *client, nil
 
 }

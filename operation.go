@@ -8,6 +8,9 @@ import (
 	glide "github.com/valkey-io/valkey-glide/go/v2"
 )
 
+/*
+Insere les clés
+*/
 func setKey(ctx context.Context, client glide.Client, key, value string, ttlSeconds int64) error {
 	_, err := client.Set(ctx, key, value)
 	if err != nil {
@@ -25,6 +28,9 @@ func setKey(ctx context.Context, client glide.Client, key, value string, ttlSeco
 	return nil
 }
 
+/*
+Insère plusieurs clés avec TTL
+*/
 func setMultipleKeysWithTTL(ctx context.Context, client glide.Client, keyValues map[string]string, ttlSeconds int64) error {
 	for k, v := range keyValues {
 		err := setKey(ctx, client, k, v, ttlSeconds)
@@ -35,6 +41,9 @@ func setMultipleKeysWithTTL(ctx context.Context, client glide.Client, keyValues 
 	return nil
 }
 
+/*
+Récupère les clés
+*/
 func getKey(ctx context.Context, client glide.Client, key string) (string, error) {
 	value, err := client.Get(ctx, key)
 	if err != nil {
@@ -48,12 +57,15 @@ func getKey(ctx context.Context, client glide.Client, key string) (string, error
 	return value.Value(), nil
 }
 
+/*
+Récupère plusieurs clés
+*/
 func getMultipleKeys(ctx context.Context, client glide.Client, keys []string) error {
 	values, err := client.MGet(ctx, keys)
 	if err != nil {
 		return fmt.Errorf("Erreur MGet: %w", err)
 	}
-	fmt.Println("MGet réussi:")
+	fmt.Println("\nMGet réussi:")
 	for i, val := range values {
 		if val.IsNil() {
 			fmt.Printf("%s -> introuvable\n", keys[i])
@@ -64,11 +76,14 @@ func getMultipleKeys(ctx context.Context, client glide.Client, keys []string) er
 	return nil
 }
 
+/*
+Supprime une clés
+*/
 func deleteKeys(ctx context.Context, client glide.Client, keys []string) error {
 	count, err := client.Del(ctx, keys)
 	if err != nil {
 		return fmt.Errorf("Erreur Del: %w", err)
 	}
-	fmt.Printf("%d clé(s) supprimée(s)\n", count)
+	fmt.Printf("\n%d clé(s) supprimée(s)\n", count)
 	return nil
 }
