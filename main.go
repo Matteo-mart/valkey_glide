@@ -25,10 +25,11 @@ func main() {
 	fmt.Printf("Serveur connecté -> %s\n\n", resp)
 
 	// Set / Get
-	if err := setKey(ctx, client, "user:1000", "matteo_martinez"); err != nil {
+	if err := setKey(ctx, client, "user:1000", "matteo_martinez", 60); err != nil {
 		fmt.Printf("%v\n", err)
 		return
 	}
+
 	if _, err := getKey(ctx, client, "user:1000"); err != nil {
 		fmt.Printf("%v\n", err)
 		return
@@ -39,10 +40,12 @@ func main() {
 		"user:1000": "matteo",
 		"user:1001": "martinez",
 	}
-	if err := setMultipleKeys(ctx, client, keyValues); err != nil {
+
+	if err := setMultipleKeysWithTTL(ctx, client, keyValues, 60); err != nil {
 		fmt.Printf("%v\n", err)
 		return
 	}
+
 	keys := []string{"user:1000", "user:1001"}
 	if err := getMultipleKeys(ctx, client, keys); err != nil {
 		fmt.Printf("%v\n", err)

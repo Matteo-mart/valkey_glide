@@ -3,16 +3,35 @@ package main
 import (
 	"context"
 	"fmt"
+	"time"
 
 	glide "github.com/valkey-io/valkey-glide/go/v2"
 )
 
-func setKey(ctx context.Context, client glide.Client, key, value string) error {
+func setKey(ctx context.Context, client glide.Client, key, value string, ttlSeconds int64) error {
 	_, err := client.Set(ctx, key, value)
 	if err != nil {
 		return fmt.Errorf("Erreur Set [%s]: %w", key, err)
 	}
-	fmt.Printf("Set réussi -> %s = %s\n", key, value)
+
+	if ttlSeconds > 0 {
+		_, err = client.Expire(ctx, key, time.Duration(ttlSeconds)*time.Second)
+		if err != nil {
+			return fmt.Errorf("Erreur Expire [%s]: %w", key, err)
+		}
+	}
+
+	fmt.Printf("Set réussi -> %s = %s (TTL: %ds)\n", key, value, ttlSeconds)
+	return nil
+}
+
+func setMultipleKeysWithTTL(ctx context.Context, client glide.Client, keyValues map[string]string, ttlSeconds int64) error {
+	for k, v := range keyValues {
+		err := setKey(ctx, client, k, v, ttlSeconds)
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -27,15 +46,6 @@ func getKey(ctx context.Context, client glide.Client, key string) (string, error
 	}
 	fmt.Printf("Get réussi -> %s = %s\n", key, value.Value())
 	return value.Value(), nil
-}
-
-func setMultipleKeys(ctx context.Context, client glide.Client, keyValues map[string]string) error {
-	_, err := client.MSet(ctx, keyValues)
-	if err != nil {
-		return fmt.Errorf("Erreur MSet: %w", err)
-	}
-	fmt.Printf("MSet réussi -> %d clés insérées\n", len(keyValues))
-	return nil
 }
 
 func getMultipleKeys(ctx context.Context, client glide.Client, keys []string) error {
