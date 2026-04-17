@@ -16,13 +16,15 @@ func connection() (glide.Client, error) {
 	//recup la config via la variable d'environnement
 	host := os.Getenv("VALKEY_HOST")
 	if host == "" {
-		host = "localhost" // Valeur par défaut
+		// Valeur par défault
+		host = "localhost"
 	}
 
 	portValkey := os.Getenv("VALKEY_PORT")
 	port, err := strconv.Atoi(portValkey)
 	if err != nil {
-		port = 6379 // Valeur par défaut
+		// Valeur par défault
+		port = 6379
 	}
 
 	cfg := config.NewClientConfiguration().
@@ -33,7 +35,6 @@ func connection() (glide.Client, error) {
 
 	client, err := glide.NewClient(cfg)
 	if err != nil {
-		// On retourne l'erreur pour que le main puisse la gérer
 		fmt.Errorf("erreur création Valkey Client: %w", err)
 	}
 
@@ -47,4 +48,5 @@ func connection() (glide.Client, error) {
 
 	log.Printf("Connexion réussie sur %s:%d", host, port)
 	return *client, nil
+
 }
