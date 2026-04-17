@@ -1,7 +1,7 @@
 Valkey GLIDE Go Project
 
 A simple Go application demonstrating basic operations with the Valkey database using the official GLIDE (General Lightweight Interface for Database Engines) driver.
-🚀 Getting Started
+ Getting Started
 Prerequisites
 
     Go: version 1.26.2 or higher.
@@ -49,7 +49,7 @@ The application performs the following operations:
 
     Del: Deletion of multiple keys.
 
-📂 Project Structure
+ Project Structure
 
     main.go: Orchestrates the execution flow.
 
@@ -59,6 +59,6 @@ The application performs the following operations:
 
     go.mod: Project dependencies, including valkey-io/valkey-glide/go/v2.
 
-📝 Configuration Note
+ Configuration Note
 
 The client is configured by default to use non-TLS connections and Database ID 0. These settings can be modified in the connection() function within connection.go.
