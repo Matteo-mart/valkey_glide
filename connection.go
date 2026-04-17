@@ -10,57 +10,28 @@ import (
 )
 
 func connection() (*glide.Client, error) {
+	// Configuration
 	host := "localhost"
 	port := 6379
 
+	// Building the configuration
 	cfg := config.NewClientConfiguration().
 		WithAddress(&config.NodeAddress{Host: host, Port: port}).
-		WithRequestTimeout(10 * time.Second).
+		WithRequestTimeout(5 * time.Second).
 		WithUseTLS(false).
 		WithDatabaseId(0)
 
-	keyValue := map[string]string{
-		"user:1000": "matteo",
-		"user:1001": "martinez",
-	}
-
+	// Initialize the client
 	client, err := glide.NewClient(cfg)
 	if err != nil {
-		return nil, fmt.Errorf("Erreur nouveau client: %w\n", err)
+		return nil, fmt.Errorf("failed to create Valkey client: %w", err)
 	}
-	// defer client.Close()
 
-	_, err = client.Set(context.Background(), "user:1000", "matteo_martinez")
+	ctx := context.Background()
+	_, err = client.Set(ctx, "connection_test", "ok")
 	if err != nil {
-		return nil, fmt.Errorf("Erreur Set: %v\n", err)
+		return nil, fmt.Errorf("client created but host unreachable: %w", err)
 	}
-	fmt.Println("Set réussi")
-
-	value, err := client.Get(context.Background(), "user:1000")
-	if value.IsNil() {
-		fmt.Println("Clé introuvable")
-	} else {
-		fmt.Printf("Get Réussi: %s\n", value.Value())
-	}
-
-	_, err = client.MSet(context.Background(), keyValue)
-	if err != nil {
-		return nil, fmt.Errorf("Erreur MSET: %v\n", err)
-	}
-	fmt.Println("MSet réussi")
-
-	keys := []string{"user:1000", "user:1001"}
-	values, err := client.MGet(context.Background(), keys)
-	if err != nil {
-		return nil, fmt.Errorf("Erreur MGet\n")
-	}
-	fmt.Printf("MGet réussi: %v\n", values)
-
-	deleteCount, err := client.Del(context.Background(), keys)
-	if err != nil {
-		return nil, fmt.Errorf("Erreur Del: %v\n", err)
-	}
-	fmt.Printf("Clés %d supprimés\n", deleteCount)
 
 	return client, nil
 }
