@@ -1,0 +1,8 @@
+module valkey_glide
+
+go 1.26.2
+
+require (
+	github.com/valkey-io/valkey-glide/go/v2 v2.3.1 // indirect
+	google.golang.org/protobuf v1.33.0 // indirect
+)
