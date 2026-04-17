@@ -1,4 +1,4 @@
-package main
+package getset
 
 import (
 	"context"
@@ -11,7 +11,13 @@ import (
 	glide "github.com/valkey-io/valkey-glide/go/v2"
 )
 
-func setKey(ctx context.Context, client glide.Client, key, value string, ttlSeconds int64) error {
+// User structure pour la gestion JSON
+type User struct {
+	ID    int    `json:"id"`
+	Email string `json:"email"`
+}
+
+func SetKey(ctx context.Context, client glide.Client, key, value string, ttlSeconds int64) error {
 	_, err := client.Set(ctx, key, value)
 	if err != nil {
 		return fmt.Errorf("erreur Set [%s]: %w", key, err)
@@ -31,9 +37,9 @@ func setKey(ctx context.Context, client glide.Client, key, value string, ttlSeco
 /*
 setMultipleKeysWithTTL :
 */
-func setMultipleKeysWithTTL(ctx context.Context, client glide.Client, keyValues map[string]string, ttlSeconds int64) error {
+func SetMultipleKeysWithTTL(ctx context.Context, client glide.Client, keyValues map[string]string, ttlSeconds int64) error {
 	for k, v := range keyValues {
-		if err := setKey(ctx, client, k, v, ttlSeconds); err != nil {
+		if err := SetKey(ctx, client, k, v, ttlSeconds); err != nil {
 			return err
 		}
 	}
@@ -43,7 +49,7 @@ func setMultipleKeysWithTTL(ctx context.Context, client glide.Client, keyValues 
 /*
 getKey :
 */
-func getKey(ctx context.Context, client glide.Client, key string) (string, error) {
+func GetKey(ctx context.Context, client glide.Client, key string) (string, error) {
 	value, err := client.Get(ctx, key)
 	if err != nil {
 		return "", fmt.Errorf("erreur technique Get [%s]: %w", key, err)
@@ -60,7 +66,7 @@ func getKey(ctx context.Context, client glide.Client, key string) (string, error
 /*
 getMultipleKeys :
 */
-func getMultipleKeys(ctx context.Context, client glide.Client, keys []string) ([]string, error) {
+func GetMultipleKeys(ctx context.Context, client glide.Client, keys []string) ([]string, error) {
 	values, err := client.MGet(ctx, keys)
 	if err != nil {
 		return nil, fmt.Errorf("erreur MGet: %w", err)
@@ -78,7 +84,7 @@ func getMultipleKeys(ctx context.Context, client glide.Client, keys []string) ([
 /*
 deleteKeys :
 */
-func deleteKeys(ctx context.Context, client glide.Client, keys []string) (int64, error) {
+func DeleteKeys(ctx context.Context, client glide.Client, keys []string) (int64, error) {
 	count, err := client.Del(ctx, keys)
 	if err != nil {
 		return 0, fmt.Errorf("erreur suppression: %w", err)
@@ -89,19 +95,19 @@ func deleteKeys(ctx context.Context, client glide.Client, keys []string) (int64,
 /*
 setUser :
 */
-func setUser(ctx context.Context, client glide.Client, key string, user User) error {
+func SetUser(ctx context.Context, client glide.Client, key string, user User) error {
 	data, err := json.Marshal(user)
 	if err != nil {
 		return fmt.Errorf("erreur sérialisation user [%d]: %w", user.ID, err)
 	}
 
-	return setKey(ctx, client, key, string(data), 3600)
+	return SetKey(ctx, client, key, string(data), 3600)
 }
 
 /*
 getUser :
 */
-func getUser(ctx context.Context, client glide.Client, key string) (*User, error) {
+func GetUser(ctx context.Context, client glide.Client, key string) (*User, error) {
 	result, err := client.Get(ctx, key)
 	if err != nil {
 		return nil, fmt.Errorf("erreur Get user [%s]: %w", key, err)

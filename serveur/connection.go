@@ -1,8 +1,9 @@
-package main
+package serveur
 
 import (
 	"context"
 	"log"
+	"log/slog"
 	"os"
 	"strconv"
 	"time"
@@ -14,7 +15,8 @@ import (
 /*
 Initialisation, connection avec valkey et création d'un client
 */
-func connection() (*glide.Client, error) {
+func Connection() (*glide.Client, error) {
+	logger := slog.Default()
 	//recup la config via la variable d'environnement
 	host := os.Getenv("VALKEY_HOST")
 	if host == "" {
