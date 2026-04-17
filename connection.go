@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -38,7 +37,7 @@ func connection() (*glide.Client, error) {
 
 	client, err := glide.NewClient(cfg)
 	if err != nil {
-		return nil, fmt.Errorf("erreur création Valkey Client: %w", err)
+		logger.Error("erreur création Valkey Client:", "error", err)
 	}
 
 	ctx := context.Background()
@@ -47,7 +46,7 @@ func connection() (*glide.Client, error) {
 	if err != nil {
 		// Nettoyage avant de quitter
 		client.Close()
-		return nil, fmt.Errorf("client créé mais Host inaccessible: %w", err)
+		logger.Error("client créé mais Host inaccessible: ", "error", err)
 	}
 
 	log.Printf("\nConnexion réussie sur %s:%d", host, port)
